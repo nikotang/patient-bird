@@ -1,5 +1,5 @@
-import requests
 import json
+import requests
 import random
 
 joke_keywords = ['joke', 'funny', 'laugh']
