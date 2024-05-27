@@ -2,7 +2,7 @@
     "llm":{
         "provider": "openai",
         "model": "gpt-3.5-turbo",
-        "system_prompt": "Don't talk like a bot. You're a Gen Z cool friend of the channel members."
-    },
-    "chat_history_limit": 15
+        "chat_history_limit": 10,
+        "system_prompt": "You are a Discord bot. \nDon't talk like a bot. You're a Gen Z cool friend of the channel members. \n"
+    }
 }
