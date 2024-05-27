@@ -21,6 +21,7 @@ Works out of the box, but also a good starting point for your own bot. An API ke
  - [Introduction](#Introduction)
  - [Set up](#Set-up)
  - [Run locally](#Run-locally)
+ - [Usage](#Usage)
 
 ## 🤔 Introduction
 
@@ -33,6 +34,8 @@ This is something simple, a bot that feels like just another member in the serve
 You can configure the LLM you want to use by editing the `config.json` file, or not touch it and make changes via slash commands in Discord when the bot is already running.
 
 ## 🏠 Run locally
+
+0. Create a Discord bot [here](https://discord.com/developers/applications). Select 'bot' in the OAuth2 URL Generator under OAuth2, then tick 'Read Messages/View Channels' under General Permissions, then you can check all Text Permissions for convenience. Paste and go to the URL with your browser to invite the bot to your server. [reference](https://www.freecodecamp.org/news/create-a-discord-bot-with-python/)
 
 1. Clone the repo and get in the directory.
 
@@ -70,6 +73,19 @@ XXX_API_KEY=your_api_key
 python main.py
 ```
 
+## Usage
+
+Mention `@YourBot` in a channel to talk to it. That's it.
+
+`/set` to set the LLM provider (e.g. `openai`) and model (e.g. `gpt-turbo-3.5`) to use, if not specified in `configs.json`, or if you want to switch to another model.
+
+View the current system prompt with `/prompt view`, and change it with `/prompt edit`.
+
+See the chat history your bot sees with `/history view`.
+Clear it with `/history clear`. Change the limit of chat entries to save with `/history limit` (saves your API quota). 
+
+The chat history is trimmed upon initiating the next response, so `/history view` only reflects the change after the LLM made a response after the limit is changed. Increasing the limit will not retrospectively add previously unread chats into history.
+
 ## ☁️ Hosting
 
 Maybe I will, but not soon.
@@ -79,7 +95,7 @@ Maybe I will, but not soon.
 
 ## 🎡 Trivia
 
-asdf
+There are some trivia functions/responses right now. Will add toggle for this.
 
 ### 📋 Todo List
 
@@ -87,10 +103,11 @@ asdf
 - [x] Edit system message
 - [x] Add other models
 - [x] document the code...
-- [ ] match key features and edit config.json params on Discord
-- [ ] trim message
-- [ ] Add/drop misc APIs?
-- [ ] use cogs
+- [x] match key features and edit config.json params on Discord
+- [ ] Make it work in DMs
+- [ ] allow making global changes
+- [ ] Enable/disable trivia, add/drop misc APIs?
+- [x] use cogs
 - [ ] edit model for specific channel
 - [ ] reply to replies
 - [ ] warn for wrong model or api key
@@ -101,14 +118,9 @@ asdf
 - [ ] use your own key
 - [ ] test ollama (local models)
 - [ ] docker
-- [ ] Make it work in DMs
+
 - [ ] Incorporate server/channel/member info?
 - [ ] multimedia understanding
 
-```Python
-  File "/Users/Me/Documents/lepatientparrot/main.py", line 73, in on_message
-    session_id = message.channel.name
-AttributeError: 'DMChannel' object has no attribute 'name'
-```
 
 </details>
