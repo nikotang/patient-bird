@@ -6,8 +6,9 @@ import re
 import discord
 from discord.ext import commands
 
-from trivia import get_trivia
 from chat.bot import Chatbot
+from trivia import get_trivia
+from utils import substitute_mentions
 
 load_dotenv()
 
@@ -37,27 +38,24 @@ class MyBot(commands.Bot):
 
     async def on_message(self, message: discord.Message):
         """Handles messages sent in chat"""
-        # removes user mentions in messages for now before passing message to storage/LLM input
-        regex = re.compile(r"<@\d+>")
         session_id = message.channel.name
         # print(message)
         # print(message.content)
 
         if session_id not in self.chatbot.session_messages: 
-            chat_history = [{"type": "ai" if (m.author.id == self.user.id) else "human",
-                            "data": {"content": f"{(f'{m.author.nick}:' or f'{m.author.name}:') if (m.author.id != self.user.id) else ''}{regex.sub('', m.content)}"}}
+            chat_history = [{"type": "human" if (m.author.id != self.user.id) else "ai",
+                            "data": {"content": f"{(f'{m.author.nick or m.author.global_name or m.author.name}: ') if (m.author.id != self.user.id) else ''}{substitute_mentions(m)}"}}
                             async for m in message.channel.history(limit=self.chatbot.chat_history_limit, before=message)]
             chat_history = list(reversed(chat_history))
             self.chatbot.store_message(chat_history, session_id)
 
-        msg = message.content
-        raw_msg = regex.sub("", msg) # TODO: only remove bot name, replace user mentions with nicknames
+        raw_msg = substitute_mentions(message)
 
         if not self.user.mentioned_in(message):
             if message.author == self.user:
                 return
             self.chatbot.store_message([{"type": "human",
-                                    "data": {"content": raw_msg}}], 
+                                    "data": {"content": f"{(message.author.nick or message.author.global_name or message.author.name)}: {raw_msg}"}}],
                                     session_id)
             response = get_trivia(raw_msg)
             if response:
@@ -69,7 +67,7 @@ class MyBot(commands.Bot):
             await message.channel.send("LLM provider not set.")
         else:
             async with message.channel.typing():
-                output = self.chatbot.chat(f"{(message.author.nick or message.author.name)}: {raw_msg}", session_id)
+                output = self.chatbot.chat(f"{(message.author.nick or message.author.global_name or message.author.name)}: {raw_msg}", session_id)
                 # split messages into multiple outputs if len(output) is over discord's limit, i.e. 2000 characters
                 chunks = [output[i:i+2000] for i in range(0, len(output), 2000)]
                 for chunk in chunks:
