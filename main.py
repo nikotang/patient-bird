@@ -7,7 +7,7 @@ import discord
 from discord.ext import commands
 
 from chat.bot import Chatbot
-from trivia import get_trivia
+from trivia import detect_trivia
 from utils import substitute_mentions
 
 load_dotenv()
@@ -57,7 +57,7 @@ class MyBot(commands.Bot):
             self.chatbot.store_message([{"type": "human",
                                     "data": {"content": f"{(message.author.nick or message.author.global_name or message.author.name)}: {raw_msg}"}}],
                                     session_id)
-            response = get_trivia(raw_msg)
+            response = detect_trivia(raw_msg)
             if response:
                 self.chatbot.store_message([{"type": "ai",
                                         "data": {"content": response}}], 

@@ -1,10 +1,11 @@
 import json
+import re
 import requests
 import random
 
-joke_keywords = ['joke', 'funny', 'laugh']
+joke_keywords = ['joke', 'funny', 'laugh', 'lol', 'lmao']
 greet_keywords = ['hello', 'hi', 'hey', 'yo']
-wiki_keywords = ['wiki', 'fact', 'learn', 'teach']
+wiki_keywords = ['wiki']
 
 def get_quote():
     response = requests.get("https://zenquotes.io/api/random")
@@ -26,8 +27,10 @@ def random_wiki():
     url = json_data['content_urls']['desktop']['page']
     return json_data['title'], url  
 
-def get_trivia(msg):
-    if any(word in msg.lower() for word in greet_keywords):
+def detect_trivia(msg):
+    msg_words = re.findall(r'\w+', msg.lower()) # look at whole words, only used for greetings and wiki
+
+    if any(word in msg_words for word in greet_keywords):
         return f'{random.choice(greet_keywords).capitalize()}!'
 
     if msg.startswith('$inspire') or 'inspir' in msg.lower():
@@ -38,7 +41,7 @@ def get_trivia(msg):
         setup, punchline = joke()
         return f'{setup}\n{punchline}'
 
-    if any(word in msg.lower() for word in wiki_keywords):
+    if any(word in msg_words for word in wiki_keywords):
         title, url = random_wiki()
         return f'Check out {title}: \n{url}'
     return False
