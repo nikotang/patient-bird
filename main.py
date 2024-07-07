@@ -33,6 +33,7 @@ class MyBot(commands.Bot):
 
     async def on_ready(self):
         print(f"We have logged in as {self.user}")
+        self.chatbot.name = str(self.user).split("#")[0]
 
     async def on_message(self, message: discord.Message):
         """Handles messages sent in chat"""
@@ -45,9 +46,9 @@ class MyBot(commands.Bot):
         if session_id not in self.chatbot.session_messages: 
             chat_history = [{"type": "ai" if (m.author.id == self.user.id) else "human",
                             "data": {"content": f"{(f'{m.author.nick}:' or f'{m.author.name}:') if (m.author.id != self.user.id) else ''}{regex.sub('', m.content)}"}}
-                            async for m in message.channel.history(limit=self.chatbot.chat_history_limit)]
+                            async for m in message.channel.history(limit=self.chatbot.chat_history_limit, before=message)]
             chat_history = list(reversed(chat_history))
-            self.chatbot.store_message(chat_history[:-1], session_id)
+            self.chatbot.store_message(chat_history, session_id)
 
         msg = message.content
         raw_msg = regex.sub("", msg) # TODO: only remove bot name, replace user mentions with nicknames
@@ -69,7 +70,10 @@ class MyBot(commands.Bot):
         else:
             async with message.channel.typing():
                 output = self.chatbot.chat(f"{(message.author.nick or message.author.name)}: {raw_msg}", session_id)
-                await message.channel.send(output)
+                # split messages into multiple outputs if len(output) is over discord's limit, i.e. 2000 characters
+                chunks = [output[i:i+2000] for i in range(0, len(output), 2000)]
+                for chunk in chunks:
+                    await message.channel.send(chunk)
 
 with open("config.json") as f:
     config = json.load(f)

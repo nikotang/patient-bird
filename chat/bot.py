@@ -17,6 +17,7 @@ class Chatbot():
     def __init__(self, llm_config: dict = {}) -> None:
         """Initializes the chatbot. """
         self.config = llm_config
+        self.name = None # added by MyBot.on_ready()
         self.system_prompt = self.config.get("system_prompt", "")
         self.output_parser = StrOutputParser()
         self.session_messages = {}
@@ -63,9 +64,11 @@ class Chatbot():
     def chat(self, message_input: str, session_id: str) -> str:
         """Chats with the LLM for one round. """
         prompt = ChatPromptTemplate.from_messages([
-            ("system", f"{self.system_prompt} \
+            ("system", f"{(f'Your name is {self.name}' if self.name else '')} \
+             {self.system_prompt} \
              Continue the conversation. Consider the earlier dialogues if they are relevant. \
-             In each user input, the name before the colon is the name of the user."),
+             In each user input, the name before the colon is the name of the user. \
+             Do not output your own name and colon before speaking. "),
             MessagesPlaceholder(variable_name="chat_history"),
             ("human", "{input}"),
         ])
