@@ -21,6 +21,7 @@ class MyBot(commands.Bot):
         # self.tree = app_commands.CommandTree(self)
         self.chatbot = Chatbot(llm_config=config["llm"])
         self.chatbot.set_llm()
+        self.trivia = True
 
     async def _load_extensions(self) -> None:
         for file in os.listdir("cogs"):
@@ -57,12 +58,13 @@ class MyBot(commands.Bot):
             self.chatbot.store_message([{"type": "human",
                                     "data": {"content": f"{(message.author.nick or message.author.global_name or message.author.name)}: {raw_msg}"}}],
                                     session_id)
-            response = detect_trivia(raw_msg)
-            if response:
-                self.chatbot.store_message([{"type": "ai",
-                                        "data": {"content": response}}], 
-                                        session_id)
-                await message.channel.send(response)
+            if self.trivia:
+                response = detect_trivia(raw_msg)
+                if response:
+                    self.chatbot.store_message([{"type": "ai",
+                                            "data": {"content": response}}], 
+                                            session_id)
+                    await message.channel.send(response)
         elif self.chatbot.llm is None:
             await message.channel.send("LLM provider not set.")
         else:

@@ -13,19 +13,20 @@ def get_quote():
     quote = json_data[0]['q'] + " -" + json_data[0]['a']
     return(quote)
 
-def joke():
+def get_joke():
     response = requests.get(r"https://official-joke-api.appspot.com/random_ten")
     json_data = json.loads(response.text)
     for i in (json_data):
-        Setup = (i["setup"])
-        Punchline = (i["punchline"])
-    return(Setup, Punchline)  
+        setup = (i["setup"])
+        punchline = (i["punchline"])
+    return f'{setup}\n{punchline}'
 
-def random_wiki():
+def get_wiki():
     response = requests.get("https://en.wikipedia.org/api/rest_v1/page/random/summary")
     json_data = json.loads(response.text)
+    title = json_data['title']
     url = json_data['content_urls']['desktop']['page']
-    return json_data['title'], url  
+    return f'Check out {title}: \n{url}'
 
 def detect_trivia(msg):
     msg_words = re.findall(r'\w+', msg.lower()) # look at whole words, only used for greetings and wiki
@@ -36,12 +37,12 @@ def detect_trivia(msg):
     if msg.startswith('$inspire') or 'inspir' in msg.lower():
         return get_quote()
 
-    #to check if above message has required keywords
     if any(word in msg.lower() for word in joke_keywords):
-        setup, punchline = joke()
-        return f'{setup}\n{punchline}'
+        return get_joke()
 
     if any(word in msg_words for word in wiki_keywords):
-        title, url = random_wiki()
-        return f'Check out {title}: \n{url}'
+        return get_wiki()
     return False
+
+def random_trivia():
+    return random.choice((get_quote(), get_joke(), get_wiki()))

@@ -2,6 +2,8 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from trivia import random_trivia
+
 class ChatBot(commands.GroupCog, group_name="chatbot", group_description="Chatbot commands"):
     def __init__(self, client):
         self.client = client
@@ -66,7 +68,28 @@ class SystemPrompt(commands.GroupCog, group_name="prompt", group_description="Sy
         await interaction.response.send_message(f"New system prompt set.")
 
 
+class Trivia(commands.GroupCog, group_name="trivia", group_description="Trivia responses"):
+    def __init__(self, client):
+        self.client = client
+
+    @app_commands.command(name="random", description="Get a random trivia response")
+    async def trivia(self, interaction: discord.Interaction):
+        """Get a random trivia response"""
+        await interaction.response.send_message(random_trivia())
+
+    @app_commands.command(name="toggle", description="Turn trivia responses in conversations on/off")
+    async def toggle(self, interaction: discord.Interaction):
+        """Turn trivia responses in conversations on/off"""
+        if self.client.trivia:
+            self.client.trivia = False
+            await interaction.response.send_message(f"Trivia responses turned off.")
+        else:
+            self.client.trivia = True
+            await interaction.response.send_message(f"Trivia responses turned on!")
+
+
 async def setup(client):
     await client.add_cog(ChatBot(client))
     await client.add_cog(ChatHistory(client))
     await client.add_cog(SystemPrompt(client))
+    await client.add_cog(Trivia(client))
