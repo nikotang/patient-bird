@@ -31,7 +31,7 @@ class ChatHistory(commands.GroupCog, group_name="history", group_description="Ch
     @app_commands.command(name="view", description="View saved chat history")
     async def view(self, interaction: discord.Interaction):
         """Shows the chat history"""
-        chat_history = self.client.chatbot.get_session_history(interaction.channel.name)
+        chat_history = self.client.chatbot.get_session_history(interaction.channel.id)
         chat_history_display = "\n".join([str(m.content) for m in chat_history.messages])
         if len(chat_history_display) > 2000:
             chat_history_display = chat_history_display[:990] + "\n...\n" + chat_history_display[-990:]
@@ -42,7 +42,7 @@ class ChatHistory(commands.GroupCog, group_name="history", group_description="Ch
     @app_commands.command(name="clear", description="Clear chat history")
     async def clear(self, interaction: discord.Interaction):
         """Clears the chat history"""
-        self.client.chatbot.clear_session_history(interaction.channel.name)
+        self.client.chatbot.clear_session_history(interaction.channel.id)
         await interaction.response.send_message(f"Chat history cleared.")
 
     @app_commands.command(name="limit", description="Maximum amount of chat entries to save")

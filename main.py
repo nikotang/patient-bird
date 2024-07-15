@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from chat.bot import Chatbot
 from trivia import detect_trivia
-from utils import substitute_mentions
+from utils import format_message, substitute_mentions
 
 load_dotenv()
 
@@ -39,41 +39,37 @@ class MyBot(commands.Bot):
 
     async def on_message(self, message: discord.Message):
         """Handles messages sent in chat"""
-        session_id = message.channel.name
-        # print(message)
-        # print(message.content)
+        session_id = message.channel.id
+        print(message)
+        print(message.content)
 
         if session_id not in self.chatbot.session_messages: 
-            chat_history = [{"type": "human" if (m.author.id != self.user.id) else "ai",
-                            "data": {"content": f"{(f'{m.author.nick or m.author.global_name or m.author.name}: ') if (m.author.id != self.user.id) else ''}{substitute_mentions(m)}"}}
+            chat_history = [format_message("human" if (m.author.id != self.user.id) else "ai", m)
                             async for m in message.channel.history(limit=self.chatbot.chat_history_limit, before=message)]
             chat_history = list(reversed(chat_history))
             self.chatbot.store_message(chat_history, session_id)
 
-        raw_msg = substitute_mentions(message)
-
-        if not self.user.mentioned_in(message):
-            if message.author == self.user:
+        if message.author == self.user:
                 return
-            self.chatbot.store_message([{"type": "human",
-                                    "data": {"content": f"{(message.author.nick or message.author.global_name or message.author.name)}: {raw_msg}"}}],
-                                    session_id)
-            if self.trivia:
-                response = detect_trivia(raw_msg)
-                if response:
-                    self.chatbot.store_message([{"type": "ai",
-                                            "data": {"content": response}}], 
-                                            session_id)
-                    await message.channel.send(response)
-        elif self.chatbot.llm is None:
-            await message.channel.send("LLM provider not set.")
+        if isinstance(message.channel, discord.DMChannel) or self.user.mentioned_in(message):
+            # the bot should respond
+            if self.chatbot.llm is None:
+                await message.channel.send("LLM provider not set.")
+            else:
+                async with message.channel.typing():
+                    output = self.chatbot.chat(format_message("human", message)["data"]["content"], session_id)
+                    # split messages into multiple outputs if len(output) is over discord's limit, i.e. 2000 characters
+                    chunks = [output[i:i+2000] for i in range(0, len(output), 2000)]
+                    for chunk in chunks:
+                        await message.channel.send(chunk)
         else:
-            async with message.channel.typing():
-                output = self.chatbot.chat(f"{(message.author.nick or message.author.global_name or message.author.name)}: {raw_msg}", session_id)
-                # split messages into multiple outputs if len(output) is over discord's limit, i.e. 2000 characters
-                chunks = [output[i:i+2000] for i in range(0, len(output), 2000)]
-                for chunk in chunks:
-                    await message.channel.send(chunk)
+            # not a DM Channel and bot is not mentioned: bot doesn't respond
+            self.chatbot.store_message([format_message("human", message)], session_id)
+            if self.trivia:
+                response = detect_trivia(message.content)
+                if response:
+                    self.chatbot.store_message([format_message("ai", response)], session_id)
+                    await message.channel.send(response)
 
 with open("config.json") as f:
     config = json.load(f)
