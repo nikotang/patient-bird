@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 import json
+import logging
 import os
 import re
 
@@ -11,6 +12,8 @@ from trivia import detect_trivia
 from utils import format_message, substitute_mentions
 
 load_dotenv()
+chat_logger = logging.getLogger('discord.chat')
+chat_logger.setLevel(logging.DEBUG)
 
 # Only necessary for quicker slash command syncs
 MY_GUILD = discord.Object(id=os.getenv("GUILD_ID"))  # replace with your guild id
@@ -34,14 +37,14 @@ class MyBot(commands.Bot):
         await self.tree.sync(guild=MY_GUILD)
 
     async def on_ready(self):
-        print(f"We have logged in as {self.user}")
+        chat_logger.info(f"We have logged in as {self.user}")
         self.chatbot.name = str(self.user).split("#")[0]
 
     async def on_message(self, message: discord.Message):
         """Handles messages sent in chat"""
         session_id = message.channel.id
-        print(message)
-        print(message.content)
+        chat_logger.debug(message)
+        chat_logger.debug(f'content: {message.content}')
 
         if session_id not in self.chatbot.session_messages: 
             chat_history = [format_message("human" if (m.author.id != self.user.id) else "ai", m)
@@ -77,4 +80,4 @@ with open("config.json") as f:
 intents = discord.Intents().all()
 bot = MyBot(intents=intents, config=config)
 
-bot.run(os.getenv("DISCORD_TOKEN"))
+bot.run(os.getenv("DISCORD_TOKEN"), log_level=logging.INFO)
