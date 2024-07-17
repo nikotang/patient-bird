@@ -9,7 +9,7 @@ from discord.ext import commands
 
 from chat.bot import Chatbot
 from trivia import detect_trivia
-from utils import format_message, substitute_mentions
+from utils import format_message
 
 load_dotenv()
 chat_logger = logging.getLogger('discord.chat')
