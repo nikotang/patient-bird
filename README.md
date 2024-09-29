@@ -1,14 +1,16 @@
-# 🐦 Patient Bird
+<h1 align="center">🐦 Patient Bird</h1>
 
-A Discord chatbot powered by LLMs. Written in Python 🐍 with Discord.py 🤖 and Langchain 🦜🔗. Less like an assistant and more like a bird that tweets along with your conversations.
+<h2 align="center">A Discord chatbot powered by LLMs. Written in Python 🐍 with Discord.py 🤖 and Langchain 🦜🔗.</h2>
+
+Less like an assistant and more like a bird that tweets along with your conversations.
 
 Works out of the box, but also a good starting point for your own bot. An API key is all you need.
 
 ## 🔑 Key Features
 
-✅ __Plug and play__: it works as long as you have an API key from Anthropic/Cohere/Deepinfra/Google AI/Mistral/Huggingface/OpenAI or you have Ollama installed.
+✅ __Plug and play__: it works as long as you have an API key from Anthropic/Cohere/Deepinfra/Google AI/Groq/Huggingface/Mistral/OpenAI or you have Ollama installed.
 
-✅ __Flexible__: you can edit your system prompt or change models even when it's already running.
+✅ __Flexible__: Config your bot with other server members: you can edit your system prompt or change models even when it's already running. No need to decide everything in a config file.
 
 ✅ __Reads chat history__: a configurable amount of earlier messages are used as input (along with who sent the messages) to generate responses. 
 
@@ -85,42 +87,3 @@ See the chat history your bot sees with `/history view`.
 Clear it with `/history clear`. Change the limit of chat entries to save with `/history limit` (saves your API quota). 
 
 The chat history is trimmed upon initiating the next response, so `/history view` only reflects the change after the LLM made a response after the limit is changed. Increasing the limit will not retrospectively add previously unread chats into history.
-
-## ☁️ Hosting
-
-Maybe I will, but not soon.
-
-<details>
-<summary>todo</summary>
-
-## 🎡 Trivia
-
-There are some trivia functions/responses right now. Will add toggle for this.
-
-### 📋 Todo List
-
-- [x] Format chat to be stored in Chatbot.store_message()
-- [x] Edit system message
-- [x] Add other models
-- [x] document the code...
-- [x] match key features and edit config.json params on Discord
-- [ ] Make it work in DMs
-- [ ] allow making global changes
-- [ ] Enable/disable trivia, add/drop misc APIs?
-- [x] use cogs
-- [ ] edit model for specific channel
-- [ ] reply to replies
-- [ ] warn for wrong model or api key
-- [ ] threads - add parent to session name?
-- [ ] toggle
-- [ ] restrict edit power to admin
-- [ ] free flow mode (multi agent?)
-- [ ] use your own key
-- [ ] test ollama (local models)
-- [ ] docker
-
-- [ ] Incorporate server/channel/member info?
-- [ ] multimedia understanding
-
-
-</details>

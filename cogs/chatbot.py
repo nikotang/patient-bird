@@ -11,7 +11,7 @@ class ChatBot(commands.GroupCog, group_name="chatbot", group_description="Chatbo
     @app_commands.command(name="set", description="Set the provider and language model to use")
     @app_commands.describe(
         provider="The LLM provider, e.g. openai, anthropic, cohere, deepinfra, google, groq, mistral",
-        model="The specfic model, e.g. gpt-3.5-turbo",
+        model="The specfic model, e.g. gpt-4o",
     )
     async def set(self, interaction: discord.Interaction, provider: str, model: str = None):
         """Sets the provider and language model to use""" # given that the host has the key
@@ -19,7 +19,7 @@ class ChatBot(commands.GroupCog, group_name="chatbot", group_description="Chatbo
         try:
             self.client.chatbot.set_llm(provider, model)
         except ValueError as e:
-            await interaction.response.send_message(f"{e}", ephemeral=False)
+            await interaction.response.send_message(f"{e}", ephemeral=True)
             raise e
         await interaction.response.send_message(f"LLM set to {provider} {model}")
 
@@ -37,7 +37,7 @@ class ChatHistory(commands.GroupCog, group_name="history", group_description="Ch
             chat_history_display = chat_history_display[:990] + "\n...\n" + chat_history_display[-990:]
         elif len(chat_history_display) == 0:
             chat_history_display = "No message history saved."
-        await interaction.response.send_message(chat_history_display, ephemeral=False)
+        await interaction.response.send_message(chat_history_display, ephemeral=True)
 
     @app_commands.command(name="clear", description="Clear chat history")
     async def clear(self, interaction: discord.Interaction):
@@ -59,7 +59,7 @@ class SystemPrompt(commands.GroupCog, group_name="prompt", group_description="Sy
     @app_commands.command(name="view", description="View saved system prompt")
     async def view(self, interaction: discord.Interaction):
         system_prompt = self.client.chatbot.system_prompt
-        await interaction.response.send_message(f"Current system prompt: \n{system_prompt}", ephemeral=False)
+        await interaction.response.send_message(f"Current system prompt: \n{system_prompt}", ephemeral=True)
 
     @app_commands.command(name="edit", description="Edit system prompt")
     async def edit(self, interaction: discord.Interaction, prompt: str):

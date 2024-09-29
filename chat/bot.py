@@ -1,6 +1,6 @@
 import logging
 
-from langchain.schema.messages import messages_from_dict
+from langchain_core.messages import messages_from_dict
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.chat_history import BaseChatMessageHistory
 from langchain_core.output_parsers import StrOutputParser
