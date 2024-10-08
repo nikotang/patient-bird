@@ -45,8 +45,7 @@ class MyBot(commands.Bot):
         session_id = message.channel.id
         chat_logger.debug(message)
         chat_logger.debug(f'content: {message.content}')
-
-        if session_id not in self.chatbot.session_messages: 
+        if not self.chatbot.graph.get_state({"configurable": {"thread_id": session_id}}).values:
             chat_history = [format_message("human" if (m.author.id != self.user.id) else "ai", m)
                             async for m in message.channel.history(limit=self.chatbot.chat_history_limit, before=message)]
             chat_history = list(reversed(chat_history))

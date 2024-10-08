@@ -32,7 +32,7 @@ class ChatHistory(commands.GroupCog, group_name="history", group_description="Ch
     async def view(self, interaction: discord.Interaction):
         """Shows the chat history"""
         chat_history = self.client.chatbot.get_session_history(interaction.channel.id)
-        chat_history_display = "\n".join([str(m.content) for m in chat_history.messages])
+        chat_history_display = "\n".join([str(m.content) for m in chat_history])
         if len(chat_history_display) > 2000:
             chat_history_display = chat_history_display[:990] + "\n...\n" + chat_history_display[-990:]
         elif len(chat_history_display) == 0:
