@@ -1,20 +1,24 @@
-# 🐦 Patient Bird
+<h1 align="center">🐦 Patient Bird</h1>
 
-A Discord chatbot powered by LLMs. Written in Python 🐍 with Discord.py 🤖 and Langchain 🦜🔗. Less like an assistant and more like a bird that tweets along with your conversations.
+<h2 align="center">A Discord chatbot powered by LLMs. Written in Python 🐍 with Discord.py 🤖, LangChain 🦜🔗 & LangGraph 🦜🕸️.</h2>
 
-Works out of the box, but also a good starting point for your own bot. An API key is all you need.
+Like a bird that tweets along with your conversations.
+
+An API key is all you need.
 
 ## 🔑 Key Features
 
-✅ __Plug and play__: it works as long as you have an API key from Anthropic/Cohere/Deepinfra/Google AI/Mistral/Huggingface/OpenAI or you have Ollama installed.
+✅ __Plug and play__: it works as long as you have an API key from Anthropic/Cohere/Deepinfra/Google AI/Groq/Huggingface/Mistral/OpenAI or you have Ollama installed.
 
-✅ __Flexible__: you can edit your system prompt or change models even when it's already running.
+✅ __Flexible__: Config your bot with other server members: you can edit your system prompt or change models even when it's already running. No need to decide everything in a config file.
 
 ✅ __Reads chat history__: a configurable amount of earlier messages are used as input (along with who sent the messages) to generate responses. 
 
+✅ __Browses the web__: it checks the web when it thinks it needs to.
+
 ❌ __Image generation__: Patient Bird doesn't paint. 
 
-❌ __Read PDFs__: Patient Bird is no office admin.
+❌ __Read PDFs__: Patient Bird is no office admin (yet).
 
 ## 📖 Contents
 
@@ -27,7 +31,7 @@ Works out of the box, but also a good starting point for your own bot. An API ke
 
 There are quite some Discord integrations with LLMs, most being replicas of AI assistants, server moderators or chatbots focused on character adaptation.
 
-This is something simple, a bot that feels like just another member in the server. Or a backbone/boilerplate that can be easily customised for servers with specific themes or purposes, because it has been a pain orienting around the Discord.py and Langchain docs.
+This is something simple, a bot that feels like just another member in the server. Or a backbone/boilerplate that can be easily customised for servers with specific themes or purposes, because it has been a pain orienting around the Discord.py and LangChain/LangGraph docs.
 
 ## 🔧 Set up
 
@@ -75,52 +79,12 @@ python main.py
 
 ## Usage
 
-Mention `@YourBot` in a channel to talk to it. That's it.
+Mention `@YourBot` in a channel to talk to it. Or send a DM. 
 
-`/set` to set the LLM provider (e.g. `openai`) and model (e.g. `gpt-turbo-3.5`) to use, if not specified in `configs.json`, or if you want to switch to another model.
+`/set` to set the LLM provider (e.g. `openai`) and model (e.g. `gpt-4o-mini`) to use, if not specified in `configs.json`, or if you want to switch to another model.
 
 View the current system prompt with `/prompt view`, and change it with `/prompt edit`.
 
-See the chat history your bot sees with `/history view`.
 Clear it with `/history clear`. Change the limit of chat entries to save with `/history limit` (saves your API quota). 
 
 The chat history is trimmed upon initiating the next response, so `/history view` only reflects the change after the LLM made a response after the limit is changed. Increasing the limit will not retrospectively add previously unread chats into history.
-
-## ☁️ Hosting
-
-Maybe I will, but not soon.
-
-<details>
-<summary>todo</summary>
-
-## 🎡 Trivia
-
-There are some trivia functions/responses right now. Will add toggle for this.
-
-### 📋 Todo List
-
-- [x] Format chat to be stored in Chatbot.store_message()
-- [x] Edit system message
-- [x] Add other models
-- [x] document the code...
-- [x] match key features and edit config.json params on Discord
-- [ ] Make it work in DMs
-- [ ] allow making global changes
-- [ ] Enable/disable trivia, add/drop misc APIs?
-- [x] use cogs
-- [ ] edit model for specific channel
-- [ ] reply to replies
-- [ ] warn for wrong model or api key
-- [ ] threads - add parent to session name?
-- [ ] toggle
-- [ ] restrict edit power to admin
-- [ ] free flow mode (multi agent?)
-- [ ] use your own key
-- [ ] test ollama (local models)
-- [ ] docker
-
-- [ ] Incorporate server/channel/member info?
-- [ ] multimedia understanding
-
-
-</details>
