@@ -13,7 +13,6 @@ from utils import format_message
 
 load_dotenv()
 chat_logger = logging.getLogger('discord.chat')
-chat_logger.setLevel(logging.DEBUG)
 
 # Only necessary for quicker slash command syncs
 MY_GUILD = discord.Object(id=os.getenv("GUILD_ID"))  # replace with your guild id
@@ -79,4 +78,5 @@ with open("config.json") as f:
 intents = discord.Intents().all()
 bot = MyBot(intents=intents, config=config)
 
+chat_logger.setLevel(logging.INFO)
 bot.run(os.getenv("DISCORD_TOKEN"), log_level=logging.INFO)
